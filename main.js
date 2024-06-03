@@ -71,7 +71,7 @@
             #bw-eventHistoryBtn, #bw-clearEventHistoryBtn {
                 background-color: #ffffff;
                 border: 2px solid #6c757d;
-                border-radius: 10px;
+                border-radius: 5px;
                 padding: 3px;
                 margin-top: 10px;
                 margin-bottom: 10px;
