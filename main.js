@@ -9,11 +9,11 @@
     // create validation area
     var elem = document.createElement('div');
     elem.setAttribute("id", "pixel-validation");
-    elem.setAttribute("style", "position: fixed; bottom:0; right:0; z-index: 999; display: block; background-color: white; border: 1px solid #dc3545; border-radius:25px 0 0 0; padding: 10px; text-align: left; max-height: 300px; overflow: auto;");
+    elem.setAttribute("style", "position: fixed; bottom:0; right:0; z-index: 999; display: block; background-color: white; border: 1px solid rgba(0,0,0, 0.5); border-radius:10px 0 0 0; padding: 10px; text-align: left; max-height: 300px; overflow: auto;");
     
     var button = document.createElement('button');
     button.setAttribute("id", "pixel-show");
-    button.setAttribute("style", "position: fixed;right: 0px;z-index: 999; bottom: 300px; background: rgba(0, 0, 0, 0); border: 0px; padding: 3px; border-radius: 20px; font-size: 20px;");
+    button.setAttribute("style", "position: fixed;right: 0px;z-index: 999; bottom: 50%; background: rgba(0, 0, 0, 0); border: 0px; padding: 3px; border-radius: 20px; font-size: 20px;");
     button.textContent = "🔧";
 
     wrapper.appendChild(elem);
@@ -26,7 +26,7 @@
     var pixelValidationElem = document.getElementById('pixel-validation');
     var cookieId = getCookie('__BWfp');
 
-    pixelValidationElem.innerHTML += `<div id ="bw-cookie">cookie ID: ${cookieId}</div>`;
+    pixelValidationElem.innerHTML += `<div id ="bw-cookie">1st cookie: ${cookieId}</div>`;
 
     setTimeout(function(){
         if(window.bw){
@@ -120,10 +120,10 @@
             console.log(ready);
             if(ready){
                 Object.keys(window.bw.pixelIds).forEach(id => {
-                    pixelValidationElem.innerHTML += `<div id ="pxiel-${id}">pixel id: ${id} `+
+                    pixelValidationElem.innerHTML += `<div id ="pxiel-${id}">pixel id: ${id} @ ${window._bw.version}`+
                         `<div class='session-id'></div>`+
                         `<div class="engagement-time"></div></div>`;
-                    document.getElementById(`pxiel-${id}`).getElementsByClassName('session-id')[0].innerHTML = `Session ID: ${getFirstPartyLocalStorageItem(`__BW_${id}`)}`;
+                    document.getElementById(`pxiel-${id}`).getElementsByClassName('session-id')[0].innerHTML = `Session: ${getFirstPartyLocalStorageItem(`__BW_${id}`)}`;
                 });
             }
         }
@@ -141,7 +141,7 @@
         // set Interval
         setInterval(function (){
             Object.keys(window.bw.pixelIds).forEach(id => {
-                var newSessionId = `Session ID: ${getFirstPartyLocalStorageItem(`__BW_${id}`)}`
+                var newSessionId = `Session: ${getFirstPartyLocalStorageItem(`__BW_${id}`)}`
                 var sessionElem = document.getElementById(`pxiel-${id}`).getElementsByClassName('session-id')[0]
                 var innerHtml = sessionElem.innerHTML;
                 if(innerHtml != newSessionId){
