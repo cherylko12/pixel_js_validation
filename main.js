@@ -9,7 +9,7 @@
     // create validation area
     var elem = document.createElement('div');
     elem.setAttribute("id", "pixel-validation");
-    elem.setAttribute("style", "position: fixed; bottom:0; right:0; z-index: 999; display: block; background-color: white; border: 1px solid rgba(0,0,0, 0.5); border-radius:10px 0 0 0; padding: 10px; text-align: left; max-height: 300px; overflow: auto;");
+    elem.setAttribute("style", "position: fixed; bottom:0; right:0; z-index: 999; display: block; background-color: white; border: 1px solid rgba(0,0,0, 0.5); border-radius:10px 0 0 0; padding: 10px; text-align: left; max-height: 50%; overflow: auto;");
     
     var button = document.createElement('button');
     button.setAttribute("id", "pixel-show");
