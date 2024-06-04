@@ -154,7 +154,7 @@
     // 覆寫sendBeacon, 攔截請求
     const originalSendBeacon = navigator.sendBeacon;
     navigator.sendBeacon = function(url, data) {
-        if(url == 'https://pixel-api.scupio.com/v0/event'){
+        if(url.includes('pixel-api.scupio.com')){
             let history =  getStoredEventHistory();
             let keys = ['browser[url]', 'sid', 'egt'];
             let dict = {}
