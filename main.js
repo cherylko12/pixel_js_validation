@@ -332,6 +332,4 @@
     addEventListener('pageshow', trackEvent, false);
     addEventListener('freeze', trackEvent, false);
     addEventListener('resume', trackEvent, false);
-    addEventListener('beforeunload', trackEvent, false);
-    addEventListener('unload', trackEvent, false);
 })();
