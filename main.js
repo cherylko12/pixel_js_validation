@@ -35,6 +35,7 @@
             setValueChecker();
             appendHistoryTable();
             refreshHistoryTable();
+            updateBrowserDisplayedState();
             document.getElementById('bw-eventHistoryBtn').addEventListener('click', () => {
                 let table = document.getElementById('bw-eventHistoryTable');
                 table.style.display = !table.style.display | table.style.display === 'none' ? 'table' : 'none';
