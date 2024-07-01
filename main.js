@@ -3,6 +3,7 @@
 
     // set history storage key
     const HISTORY_STORAGE_KEY = 'bwVisistHistory';
+    const BROWSER_STORAGE_KEY = 'bwBrowserState' + location.pathname;
 
     var wrapper = document.createElement('div');
     
@@ -43,9 +44,22 @@
                 window.localStorage.removeItem(HISTORY_STORAGE_KEY);
                 refreshHistoryTable();
             });
+
             document.getElementById('pixel-show').addEventListener('click', () => {
                 let block = document.getElementById('pixel-validation');
                 block.style.display = !block.style.display | block.style.display === 'none' ? 'block' : 'none';
+            });
+
+            document.getElementById('bw-browserEventBtn').addEventListener('click', () => {
+                let eventTable = document.getElementById('bw-eventHistoryTable');
+                eventTable.style.display = 'none';
+                let browserTable = document.getElementById('bw-browserEventHistoryTable');
+                browserTable.style.display = !browserTable.style.display | browserTable.style.display === 'none' ? 'table' : 'none';
+            });
+
+            document.getElementById('bw-browserEventClear').addEventListener('click', () => {
+                window.localStorage.removeItem(BROWSER_STORAGE_KEY);
+                updateBrowserDisplayedState();
             });
         }
     }, 3000);
@@ -68,7 +82,7 @@
                 word-break: break-word;
             }
         
-            #bw-eventHistoryBtn, #bw-clearEventHistoryBtn {
+            .bwv-btn {
                 background-color: #ffffff;
                 border: 2px solid #6c757d;
                 border-radius: 5px;
@@ -81,8 +95,10 @@
             }
         `;
         document.head.appendChild(styleTag);
-        pixelValidationElem.innerHTML += `<button id="bw-eventHistoryBtn">Show Eng. Hist.</button>`;
-        pixelValidationElem.innerHTML += `<button id="bw-clearEventHistoryBtn">Clear Eng. Hist.</button>`;
+        pixelValidationElem.innerHTML += `<button id="bw-eventHistoryBtn" class="bwv-btn">Show Eng. Hist.</button>`;
+        pixelValidationElem.innerHTML += `<button id="bw-clearEventHistoryBtn" class="bwv-btn">Clear Eng. Hist.</button>`;
+        pixelValidationElem.innerHTML += `<button id="bw-browserEventBtn" class="bwv-btn">Show Browser Hist.</button>`;
+        pixelValidationElem.innerHTML += `<button id="bw-browserEventClear" class="bwv-btn">Clear Browser Hist.</button>`;
         pixelValidationElem.innerHTML += `
             <table class="bw-log-table" id="bw-eventHistoryTable">
                 <thead>
@@ -96,10 +112,27 @@
                 </tbody>
             </table>
         `;
+
+        pixelValidationElem.innerHTML += `
+            <table class="bw-log-table" id="bw-browserEventHistoryTable">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>target</th>
+                        <th>document.hidden</th>
+                        <th>document.focus</th>
+                        <th>Time</th>
+                        <th>Session</th>
+                    </tr>
+                </thead>
+                <tbody id="bw-browserEventHistoryTableBody">
+                </tbody>
+            </table>
+        `;
     }
 
     function refreshHistoryTable(){
-        var history = getStoredEventHistory();
+        var history = getStoredEventHistory(HISTORY_STORAGE_KEY);
         const logBody = document.getElementById('bw-eventHistoryTableBody');
         logBody.innerHTML = '';
         history.forEach((log) => {
@@ -117,7 +150,6 @@
         var ready = false;
         while(!ready){
             ready = !!(window.bw?.pixelIds && Object.keys(window.bw.pixelIds).length >= 1);
-            console.log(ready);
             if(ready){
                 Object.keys(window.bw.pixelIds).forEach(id => {
                     pixelValidationElem.innerHTML += `<div id ="pxiel-${id}">pixel id: ${id} @ ${window._bw.version}`+
@@ -155,7 +187,7 @@
     const originalSendBeacon = navigator.sendBeacon;
     navigator.sendBeacon = function(url, data) {
         if(url.includes('pixel-api.scupio.com')){
-            let history =  getStoredEventHistory();
+            let history =  getStoredEventHistory(HISTORY_STORAGE_KEY);
             let keys = ['browser[url]', 'sid', 'egt'];
             let dict = {}
             for (let pair of data.entries()) {
@@ -165,21 +197,21 @@
                 }
             }
             history.push(dict);
-            saveStoredEventHistory(history);
+            saveStoredEventHistory(HISTORY_STORAGE_KEY, history);
         }
 
         // 原始navigator
         return originalSendBeacon.apply(navigator, arguments);
     };
 
-    function saveStoredEventHistory(logs) {
-        window.localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(logs));
+    function saveStoredEventHistory(key, logs) {
+        window.localStorage.setItem(key, JSON.stringify(logs));
     };
 
-    function getStoredEventHistory() {
+    function getStoredEventHistory(key) {
         var history;
         try {
-            history= JSON.parse(getFirstPartyLocalStorageItem(HISTORY_STORAGE_KEY));
+            history= JSON.parse(getFirstPartyLocalStorageItem(key));
         } catch (err) {
             // Do nothing.
             console.log(err);
@@ -228,4 +260,76 @@
         }
         return keyValue;
     }
+
+    function clearBrowserStoredState() {
+        localStorage.removeItem(BROWSER_STORAGE_KEY);
+    };
+
+    function appendStoredState(event, target, visibilityState, focus, date, session) {
+        var stateHistory = getStoredEventHistory(BROWSER_STORAGE_KEY);
+        stateHistory.push({event: event, target: target, visibilityState: visibilityState, focus: focus, date: date, session: session});
+        saveStoredEventHistory(BROWSER_STORAGE_KEY, stateHistory);
+        updateBrowserDisplayedState();
+    };
+      
+    function updateBrowserDisplayedState() {
+        var addRow = function(entry) {
+            var tr = document.createElement('tr');
+            var td1 = document.createElement('td');
+            var td2 = document.createElement('td');
+            var td3 = document.createElement('td');
+            var td4 = document.createElement('td');
+            var td5 = document.createElement('td');
+            var td6 = document.createElement('td');
+            td1.innerText = entry.event;
+            td2.innerText = entry.target;
+            td3.innerText = entry.visibilityState;
+            td4.innerText = entry.focus;
+            td5.innerText = entry.date;
+            td6.innerText = entry.session;
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            tr.appendChild(td3);
+            tr.appendChild(td4);
+            tr.appendChild(td5);
+            tr.appendChild(td6);
+            tbody.appendChild(tr);
+        };
+        var removeRow = function(row) {
+            row.parentNode.removeChild(row);
+        };
+        
+        var tbody = document.getElementById('bw-browserEventHistoryTableBody');
+        var entries = getStoredEventHistory(BROWSER_STORAGE_KEY);
+        var rows = [].slice.call(tbody.children);
+        var min = Math.min(entries.length, rows.length);
+        var max = Math.max(entries.length, rows.length);
+        
+        for (var i = min; i < max; i++) {
+            if (i >= rows.length) {
+            addRow(entries[i]);
+            } else {
+            removeRow(rows[i]);
+            }
+        }
+    };
+
+    function trackEvent(event) {
+        const target = (event.target === window ? '#window' : event.target.nodeName).toLowerCase();
+        var sessions = [];
+        Object.keys(window.bw.pixelIds).forEach(id => {
+            sessions.push(getFirstPartyLocalStorageItem(`__BW_${id}`));
+        });
+        appendStoredState(event.type, target, document.hidden, document.hasFocus(), new Date().toISOString(), sessions.join(','));
+    }
+    
+    addEventListener('focus', trackEvent, false);
+    addEventListener('blur', trackEvent, false);
+    addEventListener('visibilitychange', trackEvent, false);
+    addEventListener('pagehide', trackEvent, false);
+    addEventListener('pageshow', trackEvent, false);
+    addEventListener('freeze', trackEvent, false);
+    addEventListener('resume', trackEvent, false);
+    addEventListener('beforeunload', trackEvent, false);
+    addEventListener('unload', trackEvent, false);
 })();
