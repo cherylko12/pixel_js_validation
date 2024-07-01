@@ -62,6 +62,10 @@
                 window.localStorage.removeItem(BROWSER_STORAGE_KEY);
                 updateBrowserDisplayedState();
             });
+
+            document.getElementById('bw-updateBrowserEvent').addEventListener('click', () => {
+                updateBrowserDisplayedState();
+            });
         }
     }, 3000);
 
@@ -100,6 +104,7 @@
         pixelValidationElem.innerHTML += `<button id="bw-clearEventHistoryBtn" class="bwv-btn">Clear Eng. Hist.</button>`;
         pixelValidationElem.innerHTML += `<button id="bw-browserEventBtn" class="bwv-btn">Show Browser Hist.</button>`;
         pixelValidationElem.innerHTML += `<button id="bw-browserEventClear" class="bwv-btn">Clear Browser Hist.</button>`;
+        pixelValidationElem.innerHTML += `<button id="bw-updateBrowserEvent" class="bwv-btn">Update Browser Hist.</button>`;
         pixelValidationElem.innerHTML += `
             <table class="bw-log-table" id="bw-eventHistoryTable">
                 <thead>
@@ -261,10 +266,6 @@
         }
         return keyValue;
     }
-
-    function clearBrowserStoredState() {
-        localStorage.removeItem(BROWSER_STORAGE_KEY);
-    };
 
     function appendStoredState(event, target, visibilityState, focus, date, session) {
         var stateHistory = getStoredEventHistory(BROWSER_STORAGE_KEY);
