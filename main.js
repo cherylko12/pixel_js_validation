@@ -325,11 +325,11 @@
         appendStoredState(event.type, target, document.hidden, document.hasFocus(), new Date().toISOString(), sessions.join(','));
     }
     
-    addEventListener('focus', trackEvent, false);
-    addEventListener('blur', trackEvent, false);
-    addEventListener('visibilitychange', trackEvent, false);
-    addEventListener('pagehide', trackEvent, false);
-    addEventListener('pageshow', trackEvent, false);
-    addEventListener('freeze', trackEvent, false);
-    addEventListener('resume', trackEvent, false);
+    window.addEventListener('focus', trackEvent, false);
+    window.addEventListener('blur', trackEvent, false);
+    document.addEventListener('visibilitychange', trackEvent, false);
+    document.window.addEventListener('pagehide', trackEvent, false);
+    window.addEventListener('pageshow', trackEvent, false);
+    window.addEventListener('freeze', trackEvent, false);
+    window.addEventListener('resume', trackEvent, false);
 })();
