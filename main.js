@@ -328,7 +328,7 @@
     window.addEventListener('focus', trackEvent, false);
     window.addEventListener('blur', trackEvent, false);
     document.addEventListener('visibilitychange', trackEvent, false);
-    document.window.addEventListener('pagehide', trackEvent, false);
+    window.addEventListener('pagehide', trackEvent, false);
     window.addEventListener('pageshow', trackEvent, false);
     window.addEventListener('freeze', trackEvent, false);
     window.addEventListener('resume', trackEvent, false);
