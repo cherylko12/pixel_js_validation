@@ -334,6 +334,6 @@
     document.addEventListener('visibilitychange', trackEvent, false);
     window.addEventListener('pagehide', trackEvent, false);
     window.addEventListener('pageshow', trackEvent, false);
-    window.addEventListener('freeze', trackEvent, false);
-    window.addEventListener('resume', trackEvent, false);
+    document.addEventListener('freeze', trackEvent, false);
+    document.addEventListener('resume', trackEvent, false);
 })();
