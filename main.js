@@ -129,6 +129,7 @@
                         <th>document.focus</th>
                         <th>Time</th>
                         <th>Session</th>
+                        <th>Persisted</th>
                     </tr>
                 </thead>
                 <tbody id="bw-browserEventHistoryTableBody">
@@ -267,9 +268,9 @@
         return keyValue;
     }
 
-    function appendStoredState(event, target, visibilityState, focus, date, session) {
+    function appendStoredState(event, target, visibilityState, focus, date, session, persisted) {
         var stateHistory = getStoredEventHistory(BROWSER_STORAGE_KEY);
-        stateHistory.push({event: event, target: target, visibilityState: visibilityState, focus: focus, date: date, session: session});
+        stateHistory.push({event: event, target: target, visibilityState: visibilityState, focus: focus, date: date, session: session, persisted: persisted});
         saveStoredEventHistory(BROWSER_STORAGE_KEY, stateHistory);
         updateBrowserDisplayedState();
     };
@@ -283,18 +284,21 @@
             var td4 = document.createElement('td');
             var td5 = document.createElement('td');
             var td6 = document.createElement('td');
+            var td7 = document.createElement('td');
             td1.innerText = entry.event;
             td2.innerText = entry.target;
             td3.innerText = entry.visibilityState;
             td4.innerText = entry.focus;
             td5.innerText = entry.date;
             td6.innerText = entry.session;
+            td7.innerText = entry?.persisted;
             tr.appendChild(td1);
             tr.appendChild(td2);
             tr.appendChild(td3);
             tr.appendChild(td4);
             tr.appendChild(td5);
             tr.appendChild(td6);
+            tr.appendChild(td7);
             tbody.appendChild(tr);
         };
         var removeRow = function(row) {
@@ -322,7 +326,7 @@
         Object.keys(window.bw.pixelIds).forEach(id => {
             sessions.push(getFirstPartyLocalStorageItem(`__BW_${id}`));
         });
-        appendStoredState(event.type, target, document.hidden, document.hasFocus(), new Date().toISOString(), sessions.join(','));
+        appendStoredState(event.type, target, document.hidden, document.hasFocus(), new Date().toISOString(), sessions.join(','), event.persisted);
     }
     
     window.addEventListener('focus', trackEvent, false);
