@@ -27,7 +27,7 @@
     var pixelValidationElem = document.getElementById('pixel-validation');
     var cookieId = getCookie('__BWfp');
 
-    pixelValidationElem.innerHTML += `<div id ="bwv-version">helper version: 0.0.1</div>`;
+    pixelValidationElem.innerHTML += `<div id ="bwv-version">helper version: 0.0.2</div>`;
     pixelValidationElem.innerHTML += `<div id ="bw-cookie">1st cookie: ${cookieId}</div>`;
 
     setTimeout(function(){
