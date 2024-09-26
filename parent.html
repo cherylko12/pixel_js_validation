@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PixelJS testing page</title>
+    <script>
+        localStorage.removeItem('sclsid');
+        !function(b,r,i,d,g,e,w,l){if(b._bw)return;var a=b._bw=function(){a.callMethods?a.callMethods.apply(a,arguments):a.queue.push(arguments)};a.queue=[];var j=r.createElement(i);j.async=!0;j.src=d;var d=r.getElementsByTagName(i)[0];d.parentNode.insertBefore(j,d)}(window,document,'script','https://img.scupio.com/js/pixel.js');
+        (window._bwq = window._bwq || []).push(['init', '1-13B0840232CMA', { ulid: 'core-test', em: 'test@test.com' }]);
+        (window._bwq = window._bwq || []).push(['trackSingle', '1-13B0840232CMA', 'PageView']);
+    </script>
+</head>
+
+<body>
+
+    <h1>IFrame test</h1>
+    <a href=""></a>
+    <div>
+        <!-- <p>Message: </p> -->
+        <p id="message"></p>
+    </div>
+    <div>
+        <!-- <p>Message: </p> -->
+        <p id="localstorage"></p>
+    </div>
+
+    <!-- <iframe src="http://localhost:5500/sample/child_iframe.html"></iframe> -->
+    <!-- <iframe src="https://img.scupio.com/html/ls.html?mid=205"></iframe> -->
+
+</body>
+
+</html>
+
+<script>
+    var count=0;
+    var text = "";
+    
+    // function addEvent(event, elem, func) {
+    //     if (elem.addEventListener) {  // W3C DOM
+    //         elem.addEventListener(event, func, false);
+    //     } else if (elem.attachEvent) { // IE DOM
+    //         elem.attachEvent('on' + event, func);
+    //     }
+    // }
+
+    // function removeEvent(event, elem, func) {
+    //     if (elem.removeEventListener) { // W3C DOM
+    //         elem.removeEventListener(event, func, false);
+    //     } else if (elem.detachEvent) { // IE DOM
+    //         elem.detachEvent('on' + event, func);
+    //     }
+    // }
+
+    // addEvent('message', window, onMessage);
+
+    // function onMessage(e) {
+    //     // do something else
+    //     var obj = Object.getPrototypeOf(e);
+    //     var keys = Object.getOwnPropertyNames(obj);
+    //     removeEvent('message', window, onMessage);
+    //     console.log(e);
+    //     count += 1;
+    //     text += `
+    //         count : ${count} <br/>
+    //         data type: ${typeof e.data} <br/>
+    //         data: ${JSON.stringify(e.data)} <br/>
+    //         origin: ${e.origin} <br/>
+    //         cancelBubble: ${e.cancelBubble} <br/>
+    //         cancelable: ${e.cancelable} <br/>
+    //         defaultPrevented: ${e.defaultPrevented} <br/>
+    //         lastEventId: ${e.lastEventId} <br/>
+    //         returnValue: ${e.returnValue} <br/>
+    //         timeStamp: ${e.timeStamp} <br/>
+    //         type: ${e.type} <br/>
+    //         <br/><br/>
+    //     `
+    //     document.getElementById("message").innerHTML = text
+    //     // var id;
+    //     // if (event && typeof event.origin === 'string' && event.origin.indexOf('//img.scupio.com') >= 0) {
+    //     //     if (event.data && typeof event.data === 'string') {
+    //     //         id = event.data || event.message;
+    //     //         removeEvent('message', window, onMessage);
+    //     //         runCallback(id);
+    //     //     }
+    //     // }
+    // }
+
+
+    const receiveMessage = (e)=> {
+        // window.removeEventListener('message', receiveMessage);
+        // do something else
+        var obj = Object.getPrototypeOf(e);
+        var keys = Object.getOwnPropertyNames(obj);
+        console.log(e);
+        count += 1;
+        text += `
+            received count : ${count} <br/>
+            from img message: ${e && typeof e.origin === 'string' && e.origin.indexOf('//img.scupio.com') >= 0} <br/>
+            data type: ${typeof e.data} <br/>
+            data: ${JSON.stringify(e.data)} <br/>
+            origin type: ${typeof e.origin} <br/>
+            origin: ${e.origin} <br/>
+            <br/><br/>
+        `
+        document.getElementById("message").innerHTML = text
+        // document.getElementById("localstorage").innerHTML = localStorage.getItem('sclsid');
+    }
+    window.addEventListener('message', receiveMessage, false);
+    setInterval(() => {
+        document.getElementById("localstorage").innerHTML = localStorage.getItem('sclsid');
+    }, 1000);
+
+    var href = `javascript:(function(){var newHtml='<div>LocalSorage:'+localStorage.getItem('sclsid')+'</div>';document.body.insertAdjacentHTML('afterbegin', newHtml)})();`
+    // var encodedHref = encodeURIComponent(href);
+    // console.log(encodedHref);
+    document.body.insertAdjacentHTML('afterbegin', `<a href="${href}">Javascript Link</a>`)
+    // window.addEventListener("message", (e) => {
+    //     var obj = Object.getPrototypeOf(e);
+    //     var keys = Object.getOwnPropertyNames(obj);
+    //     console.log(e);
+    //     count += 1;
+    //     text += `
+    //         count : ${count} <br/>
+    //         data type: ${typeof e.data} <br/>
+    //         data: ${JSON.stringify(e.data)} <br/>
+    //         origin: ${e.origin} <br/>
+    //         cancelBubble: ${e.cancelBubble} <br/>
+    //         cancelable: ${e.cancelable} <br/>
+    //         defaultPrevented: ${e.defaultPrevented} <br/>
+    //         lastEventId: ${e.lastEventId} <br/>
+    //         returnValue: ${e.returnValue} <br/>
+    //         timeStamp: ${e.timeStamp} <br/>
+    //         type: ${e.type} <br/>
+    //         <br/><br/>
+    //     `
+    //     document.getElementById("message").innerHTML = text
+    // }, false);
+</script>      
